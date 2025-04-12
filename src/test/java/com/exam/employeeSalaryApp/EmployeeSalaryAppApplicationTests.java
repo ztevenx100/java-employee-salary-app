@@ -1,10 +1,10 @@
-package com.test.java_employee_salary_app;
+package com.exam.employeeSalaryApp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class JavaEmployeeSalaryAppApplicationTests {
+class EmployeeSalaryAppApplicationTests {
 
 	@Test
 	void contextLoads() {
