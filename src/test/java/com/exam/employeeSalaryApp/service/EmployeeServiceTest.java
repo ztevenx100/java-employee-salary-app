@@ -9,7 +9,7 @@ public class EmployeeServiceTest {
     @Test
     public void testCalculateAnnualSalary() {
         Employee employee = new Employee();
-        employee.setEmployeeSalary(5000);
+        employee.setEmployee_salary(5000);
         assertEquals(60000, employee.getAnnualSalary());
     }
 }

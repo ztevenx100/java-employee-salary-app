@@ -20,6 +20,7 @@ public class EmployeeController {
     public String showEmployees(@RequestParam(required = false) String id, Model model) {
         if (id == null || id.isEmpty()) {
             List<Employee> employees = employeeService.getAllEmployees();
+            System.out.println("All Employees: " + employees);
             model.addAttribute("employees", employees);
         } else {
             Employee employee = employeeService.getEmployeeById(id);
