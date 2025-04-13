@@ -1,13 +1,13 @@
-package com.test.java_employee_salary_app;
+package com.exam.employeeSalaryApp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class JavaEmployeeSalaryAppApplication {
+public class EmployeeSalaryAppApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(JavaEmployeeSalaryAppApplication.class, args);
+		SpringApplication.run(EmployeeSalaryAppApplication.class, args);
 	}
 
 }

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Employee App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Employee Search</h1>
+    <form action="/" method="get">
+        <input type="text" name="id" placeholder="Enter Employee ID" class="form-control mb-3">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+    <table class="table table-striped mt-3">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Salary</th>
+            <th>Annual Salary</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="employee : ${employees}">
+            <td th:text="${employee.id}"></td>
+            <td th:text="${employee.employeeName}"></td>
+            <td th:text="${employee.employeeSalary}"></td>
+            <td th:text="${employee.annualSalary}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
