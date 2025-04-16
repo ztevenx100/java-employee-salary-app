@@ -24,6 +24,7 @@ public class EmployeeController {
             model.addAttribute("employees", employees);
         } else {
             Employee employee = employeeService.getEmployeeById(id);
+            System.out.println("Employee #" + id + ": " + employee);
             model.addAttribute("employees", List.of(employee));
         }
         return "index";

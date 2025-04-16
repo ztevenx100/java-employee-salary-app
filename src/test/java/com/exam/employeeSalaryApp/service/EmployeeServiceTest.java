@@ -10,6 +10,6 @@ public class EmployeeServiceTest {
     public void testCalculateAnnualSalary() {
         Employee employee = new Employee();
         employee.setEmployee_salary(5000);
-        assertEquals(60000, employee.getAnnualSalary());
+        assertEquals(60000, employee.calculateAnnualSalary());
     }
 }
