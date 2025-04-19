@@ -5,6 +5,7 @@ import java.util.List;
 public class ApiResponse {
     private String status;
     private List<Employee> data;
+    private String message;
 
     // Getters y Setters
     public String getStatus() {
@@ -22,4 +23,13 @@ public class ApiResponse {
     public void setData(List<Employee> data) {
         this.data = data;
     }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+    
 }

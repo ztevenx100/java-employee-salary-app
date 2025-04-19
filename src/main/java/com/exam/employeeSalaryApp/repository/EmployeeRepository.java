@@ -24,14 +24,20 @@ public class EmployeeRepository {
 
     public List<Employee> getAllEmployees() {
         return executeWithRetries(() -> {
-            ApiResponse response = restTemplate.getForObject(BASE_URL + "/employees", ApiResponse.class);
+            ApiResponse response = restTemplate.getForObject(
+                BASE_URL + "/employees"
+                , ApiResponse.class
+            );
             return response != null && response.getData() != null ? response.getData() : Collections.emptyList();
         });
     }
 
     public Employee getEmployeeById(String id) {
         return (Employee) executeWithRetries(() -> {
-            ApiResponse response = restTemplate.getForObject(BASE_URL + "/employee/" + id, ApiResponse.class);
+            ApiResponse response = restTemplate.getForObject(
+                BASE_URL + "/employee/" + id
+                , ApiResponse.class
+            );
             if (response != null && response.getData() instanceof Employee) {
                 return response.getData();
             }
