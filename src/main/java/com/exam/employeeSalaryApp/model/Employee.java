@@ -74,11 +74,11 @@ public class Employee {
     }
 
     public double getAnnualSalary() {
-        return employee_salary * 12;
+        return this.employee_salary * 12;
     }
 
     public double calculateAnnualSalary() {
-        return employee_salary * 12;
+        return this.employee_salary * 12;
     }
 
     @Override
