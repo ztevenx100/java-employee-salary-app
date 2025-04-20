@@ -18,15 +18,18 @@ public class EmployeeController {
 
     @GetMapping("/")
     public String showEmployees(@RequestParam(required = false) String id, Model model) {
-        if (id == null || id.isEmpty()) {
-            List<Employee> employees = employeeService.getAllEmployees();
-            System.out.println("All Employees: " + employees);
-            model.addAttribute("employees", employees);
-        } else {
-            Employee employee = employeeService.getEmployeeById(id);
-            System.out.println("Employee #" + id + ": " + employee);
-            model.addAttribute("employees", List.of(employee));
+        try {
+            if (id == null || id.isEmpty()) {
+                List<Employee> employees = employeeService.getAllEmployees();
+                model.addAttribute("employees", employees);
+            } else {
+                Employee employee = employeeService.getEmployeeById(id);
+                model.addAttribute("employees", List.of(employee));
+            }
+            return "index";
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
         }
-        return "index";
     }
 }

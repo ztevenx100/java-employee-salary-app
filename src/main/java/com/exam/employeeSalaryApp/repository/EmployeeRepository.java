@@ -14,7 +14,7 @@ public class EmployeeRepository {
 
     private static final String BASE_URL = "http://dummy.restapiexample.com/api/v1";
     private static final int MAX_RETRIES = 3;
-    private static final int INITIAL_WAIT_TIME = 1000;
+    private static final int INITIAL_WAIT_TIME = 3000;
 
     private final RestTemplate restTemplate;
 
@@ -23,37 +23,53 @@ public class EmployeeRepository {
     }
 
     public List<Employee> getAllEmployees() {
+        String url = BASE_URL + "/employees";
+        System.out.println("Fetching all employees from: " + url);
         return executeWithRetries(() -> {
-            ApiResponse response = restTemplate.getForObject(BASE_URL + "/employees", ApiResponse.class);
-            return response != null && response.getData() != null ? response.getData() : Collections.emptyList();
+            ApiResponse response = restTemplate.getForObject(url, ApiResponse.class);
+            if (response != null && response.getData() != null) {
+                return response.getData();
+            }
+            return Collections.emptyList();
         });
     }
 
     public Employee getEmployeeById(String id) {
-        return (Employee) executeWithRetries(() -> {
-            ApiResponse response = restTemplate.getForObject(BASE_URL + "/employee/" + id, ApiResponse.class);
-            if (response != null && response.getData() instanceof Employee) {
-                return response.getData();
+        String url = BASE_URL + "/employee/" + id;
+        System.out.println("Fetching employee with ID " + id + " from: " + url);
+        return executeWithRetries(() -> {
+            ApiResponse response = restTemplate.getForObject(url, ApiResponse.class);
+            if (response != null && response.getData() != null) {
+                return (Employee) response.getData();
             }
-            throw new RuntimeException("Employee not found or invalid response structure.");
+            throw new RuntimeException("Employee not found with ID: " + id);
         });
     }
 
     private <T> T executeWithRetries(RetryableTask<T> task) {
         int waitTime = INITIAL_WAIT_TIME;
+        RuntimeException lastException = null;
+        
         for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
             try {
                 return task.execute();
             } catch (HttpClientErrorException.TooManyRequests e) {
+                lastException = new RuntimeException("Too many requests. Please try again later.", e);
                 System.out.println("Attempt " + attempt + " failed: Too Many Requests. Retrying...");
-                if (attempt == MAX_RETRIES) {
-                    throw new RuntimeException("Max retries reached. Unable to complete the request.", e);
+                if (attempt < MAX_RETRIES) {
+                    sleep(waitTime);
+                    waitTime *= 2;
                 }
-                sleep(waitTime);
-                waitTime *= 2; // Exponential backoff
+            } catch (Exception e) {
+                lastException = new RuntimeException("Error accessing the employee API: " + e.getMessage(), e);
+                if (attempt < MAX_RETRIES) {
+                    sleep(waitTime);
+                    waitTime *= 2;
+                }
             }
         }
-        throw new RuntimeException("Unexpected error: retries exhausted.");
+        throw lastException != null ? lastException : 
+            new RuntimeException("Failed to complete the request after " + MAX_RETRIES + " attempts");
     }
 
     private void sleep(int waitTime) {
@@ -67,6 +83,6 @@ public class EmployeeRepository {
 
     @FunctionalInterface
     private interface RetryableTask<T> {
-        T execute() throws HttpClientErrorException.TooManyRequests;
+        T execute() throws Exception;
     }
 }

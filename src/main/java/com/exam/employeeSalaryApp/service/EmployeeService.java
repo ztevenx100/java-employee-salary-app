@@ -3,6 +3,7 @@ package com.exam.employeeSalaryApp.service;
 import com.exam.employeeSalaryApp.model.Employee;
 import com.exam.employeeSalaryApp.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,10 +18,12 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
+    @Cacheable("employees")
     public List<Employee> getAllEmployees() {
         return employeeRepository.getAllEmployees();
     }
 
+    @Cacheable(value = "employee", key = "#id")
     public Employee getEmployeeById(String id) {
         return employeeRepository.getEmployeeById(id);
     }
