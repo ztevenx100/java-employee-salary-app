@@ -2,22 +2,38 @@ package com.exam.employeeSalaryApp.model;
 
 import java.util.Objects;
 
+/**
+ * Employee entity class that represents an employee in the system.
+ * This class follows the principles of encapsulation and data validation.
+ */
 public class Employee {
     
     private String id;
-    private String employee_name;
-    private double employee_salary;
-    private int employee_age;
-    private String profile_image;
+    private String employeeName; // Renamed for Java naming conventions
+    private double monthlySalary; // Renamed for clarity
+    private int age; // Simplified name
+    private String profileImage; // Renamed for Java naming conventions
 
-    public Employee(String id, String employee_name, double employee_salary, int employee_age, String profile_image) {
-        this.id = id;
-        this.employee_name = employee_name;
-        this.employee_salary = employee_salary;
-        this.employee_age = employee_age;
-        this.profile_image = profile_image;
+    /**
+     * Constructs a new Employee with all required fields.
+     *
+     * @param id Employee's unique identifier
+     * @param employeeName Employee's full name
+     * @param monthlySalary Employee's monthly salary
+     * @param age Employee's age
+     * @param profileImage URL or path to employee's profile image
+     */
+    public Employee(String id, String employeeName, double monthlySalary, int age, String profileImage) {
+        setId(id); // Using setters for validation
+        setEmployeeName(employeeName);
+        setMonthlySalary(monthlySalary);
+        setAge(age);
+        setProfileImage(profileImage);
     }
 
+    /**
+     * Default constructor required for JSON deserialization.
+     */
     public Employee() {
     }
 
@@ -29,56 +45,98 @@ public class Employee {
         if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("ID cannot be null or empty");
         }
-        this.id = id;
+        this.id = id.trim();
     }
 
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    // Maintaining compatibility with API response
     public String getEmployee_name() {
-        return employee_name;
+        return getEmployeeName();
     }
 
-    public void setEmployee_name(String employee_name) {
-        if (employee_name == null || employee_name.trim().isEmpty()) {
+    public void setEmployeeName(String employeeName) {
+        if (employeeName == null || employeeName.trim().isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty");
         }
-        this.employee_name = employee_name;
+        this.employeeName = employeeName.trim();
     }
 
+    // Maintaining compatibility with API response
+    public void setEmployee_name(String employee_name) {
+        setEmployeeName(employee_name);
+    }
+
+    public double getMonthlySalary() {
+        return monthlySalary;
+    }
+
+    // Maintaining compatibility with API response
     public double getEmployee_salary() {
-        return employee_salary;
+        return getMonthlySalary();
     }
 
-    public void setEmployee_salary(double employee_salary) {
-        if (employee_salary < 0) {
+    public void setMonthlySalary(double monthlySalary) {
+        if (monthlySalary < 0) {
             throw new IllegalArgumentException("Salary cannot be negative");
         }
-        this.employee_salary = employee_salary;
+        this.monthlySalary = monthlySalary;
     }
 
+    // Maintaining compatibility with API response
+    public void setEmployee_salary(double employee_salary) {
+        setMonthlySalary(employee_salary);
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    // Maintaining compatibility with API response
     public int getEmployee_age() {
-        return employee_age;
+        return getAge();
     }
 
-    public void setEmployee_age(int employee_age) {
-        if (employee_age <= 0) {
+    public void setAge(int age) {
+        if (age <= 0) {
             throw new IllegalArgumentException("Age must be a positive integer");
         }
-        this.employee_age = employee_age;
+        this.age = age;
     }
 
+    // Maintaining compatibility with API response
+    public void setEmployee_age(int employee_age) {
+        setAge(employee_age);
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    // Maintaining compatibility with API response
     public String getProfile_image() {
-        return profile_image;
+        return getProfileImage();
     }
 
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage != null ? profileImage.trim() : "";
+    }
+
+    // Maintaining compatibility with API response
     public void setProfile_image(String profile_image) {
-        this.profile_image = profile_image;
+        setProfileImage(profile_image);
     }
 
-    public double getAnnualSalary() {
-        return this.employee_salary * 12;
-    }
-
+    /**
+     * Calculates the annual salary based on the monthly salary.
+     * Annual salary is computed as 12 times the monthly salary.
+     *
+     * @return the calculated annual salary
+     */
     public double calculateAnnualSalary() {
-        return this.employee_salary * 12;
+        return this.monthlySalary * 12;
     }
 
     @Override
@@ -98,10 +156,10 @@ public class Employee {
     public String toString() {
         return "Employee{" +
             "id='" + id + '\'' +
-            ", name='" + employee_name + '\'' +
-            ", salary=" + employee_salary +
-            ", age=" + employee_age +
-            ", profileImage='" + profile_image + '\'' +
+            ", name='" + employeeName + '\'' +
+            ", monthlySalary=" + monthlySalary +
+            ", age=" + age +
+            ", profileImage='" + profileImage + '\'' +
             '}';
     }
 }

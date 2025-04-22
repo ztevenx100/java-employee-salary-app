@@ -12,11 +12,10 @@ import java.util.List;
 @Repository
 public class EmployeeRepository {
 
+    private final RestTemplate restTemplate;
     private static final String BASE_URL = "http://dummy.restapiexample.com/api/v1";
     private static final int MAX_RETRIES = 3;
     private static final int INITIAL_WAIT_TIME = 3000;
-
-    private final RestTemplate restTemplate;
 
     public EmployeeRepository() {
         this.restTemplate = new RestTemplate();
@@ -27,6 +26,7 @@ public class EmployeeRepository {
         System.out.println("Fetching all employees from: " + url);
         return executeWithRetries(() -> {
             ApiResponse response = restTemplate.getForObject(url, ApiResponse.class);
+            
             if (response != null && response.getData() != null) {
                 return response.getData();
             }
@@ -36,13 +36,17 @@ public class EmployeeRepository {
 
     public Employee getEmployeeById(String id) {
         String url = BASE_URL + "/employee/" + id;
-        System.out.println("Fetching employee with ID " + id + " from: " + url);
+        System.out.println("Fetching employee with ID |" + id + "| from: " + url);
         return executeWithRetries(() -> {
             ApiResponse response = restTemplate.getForObject(url, ApiResponse.class);
+            
+            System.out.println("response |" + response );
             if (response != null && response.getData() != null) {
                 return (Employee) response.getData();
             }
+
             throw new RuntimeException("Employee not found with ID: " + id);
+            //return new Employee();
         });
     }
 
@@ -52,7 +56,10 @@ public class EmployeeRepository {
         
         for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
             try {
-                return task.execute();
+                System.out.println("Attempt " + attempt + " to execute task...");
+                T result = task.execute();
+                System.out.println("Attempt " + result + " succeeded.");
+                return result;
             } catch (HttpClientErrorException.TooManyRequests e) {
                 lastException = new RuntimeException("Too many requests. Please try again later.", e);
                 System.out.println("Attempt " + attempt + " failed: Too Many Requests. Retrying...");
