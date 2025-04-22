@@ -32,4 +32,9 @@ public class EmployeeController {
             return "error";
         }
     }
+
+    @GetMapping("/about")
+    public String showAbout() {
+        return "about";
+    }
 }
