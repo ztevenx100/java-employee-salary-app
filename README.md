@@ -13,7 +13,7 @@ This Spring Boot application manages employee information and calculates annual 
 
 ### Clone the Repository
 ```bash
-git clone [your-repository-url]
+git clone [https://github.com/ztevenx100/java-employee-salary-app]
 cd java-employee-salary-app
 ```
 

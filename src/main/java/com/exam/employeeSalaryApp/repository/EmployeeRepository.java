@@ -2,23 +2,26 @@ package com.exam.employeeSalaryApp.repository;
 
 import com.exam.employeeSalaryApp.model.ApiResponse;
 import com.exam.employeeSalaryApp.model.Employee;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class EmployeeRepository {
-
-    private final RestTemplate restTemplate;
     private static final String BASE_URL = "http://dummy.restapiexample.com/api/v1";
     private static final int MAX_RETRIES = 3;
     private static final int INITIAL_WAIT_TIME = 3000;
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     public EmployeeRepository() {
         this.restTemplate = new RestTemplate();
+        this.objectMapper = new ObjectMapper();
     }
 
     public List<Employee> getAllEmployees() {
@@ -26,9 +29,11 @@ public class EmployeeRepository {
         System.out.println("Fetching all employees from: " + url);
         return executeWithRetries(() -> {
             ApiResponse response = restTemplate.getForObject(url, ApiResponse.class);
-            
             if (response != null && response.getData() != null) {
-                return response.getData();
+                List<?> dataList = response.getData();
+                return dataList.stream()
+                    .map(item -> objectMapper.convertValue(item, Employee.class))
+                    .collect(Collectors.toList());
             }
             return Collections.emptyList();
         });
@@ -39,14 +44,10 @@ public class EmployeeRepository {
         System.out.println("Fetching employee with ID |" + id + "| from: " + url);
         return executeWithRetries(() -> {
             ApiResponse response = restTemplate.getForObject(url, ApiResponse.class);
-            
-            System.out.println("response |" + response );
             if (response != null && response.getData() != null) {
-                return (Employee) response.getData();
+                return objectMapper.convertValue(response.getData(), Employee.class);
             }
-
             throw new RuntimeException("Employee not found with ID: " + id);
-            //return new Employee();
         });
     }
 
@@ -57,9 +58,7 @@ public class EmployeeRepository {
         for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
             try {
                 System.out.println("Attempt " + attempt + " to execute task...");
-                T result = task.execute();
-                System.out.println("Attempt " + result + " succeeded.");
-                return result;
+                return task.execute();
             } catch (HttpClientErrorException.TooManyRequests e) {
                 lastException = new RuntimeException("Too many requests. Please try again later.", e);
                 System.out.println("Attempt " + attempt + " failed: Too Many Requests. Retrying...");

@@ -1,13 +1,13 @@
 package com.exam.employeeSalaryApp.model;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiResponse {
     private String status;
-    private List<Employee> data;
+    private Object data;
     private String message;
 
-    // Getters y Setters
     public String getStatus() {
         return status;
     }
@@ -16,11 +16,12 @@ public class ApiResponse {
         this.status = status;
     }
 
-    public List<Employee> getData() {
-        return data;
+    @SuppressWarnings("unchecked")
+    public <T> T getData() {
+        return (T) data;
     }
 
-    public void setData(List<Employee> data) {
+    public void setData(Object data) {
         this.data = data;
     }
 
@@ -31,5 +32,4 @@ public class ApiResponse {
     public void setMessage(String message) {
         this.message = message;
     }
-    
 }

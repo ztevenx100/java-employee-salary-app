@@ -25,6 +25,9 @@ public class EmployeeService {
 
     @Cacheable(value = "employee", key = "#id")
     public Employee getEmployeeById(String id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Employee ID cannot be null");
+        }
         return employeeRepository.getEmployeeById(id);
     }
 }

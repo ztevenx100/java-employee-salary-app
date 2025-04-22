@@ -121,7 +121,7 @@ public class Employee {
     }
 
     public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage != null ? profileImage.trim() : "";
+        this.profileImage = profileImage != null ? profileImage.trim() : null;
     }
 
     // Maintaining compatibility with API response
