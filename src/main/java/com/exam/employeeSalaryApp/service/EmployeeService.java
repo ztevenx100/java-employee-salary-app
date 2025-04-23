@@ -24,7 +24,7 @@ public class EmployeeService {
     }
 
     @Cacheable(value = "employee", key = "#id")
-    public Employee getEmployeeById(String id) {
+    public Employee getEmployeeById(Integer id) {
         if (id == null) {
             throw new IllegalArgumentException("Employee ID cannot be null");
         }

@@ -17,9 +17,9 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping("/")
-    public String showEmployees(@RequestParam(required = false) String id, Model model) {
+    public String showEmployees(@RequestParam(required = false) Integer id, Model model) {
         try {
-            if (id == null || id.isEmpty()) {
+            if (id == null) {
                 List<Employee> employees = employeeService.getAllEmployees();
                 model.addAttribute("employees", employees);
             } else {

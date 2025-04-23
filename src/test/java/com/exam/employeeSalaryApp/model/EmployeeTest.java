@@ -11,10 +11,10 @@ class EmployeeTest {
     @Test
     void constructor_WithValidData_ShouldCreateEmployee() {
         // Act
-        Employee employee = new Employee("1", "John Doe", 5000.0, 30, "profile.jpg");
+        Employee employee = new Employee(1, "John Doe", 5000.0, 30, "profile.jpg");
 
         // Assert
-        assertEquals("1", employee.getId());
+        assertEquals(1, employee.getId());
         assertEquals("John Doe", employee.getEmployeeName());
         assertEquals(5000.0, employee.getMonthlySalary());
         assertEquals(30, employee.getAge());
@@ -29,15 +29,15 @@ class EmployeeTest {
         // Assert
         assertNull(employee.getId());
         assertNull(employee.getEmployeeName());
-        assertEquals(0.0, employee.getMonthlySalary());
-        assertEquals(0, employee.getAge());
-        assertNull(employee.getProfileImage());
+        assertNull(employee.getMonthlySalary());
+        assertNull(employee.getAge());
+        assertEquals("", employee.getProfileImage());
     }
 
     @Test
     void calculateAnnualSalary_ShouldReturnCorrectValue() {
         // Arrange
-        Employee employee = new Employee("1", "John Doe", 5000.0, 30, "");
+        Employee employee = new Employee(1, "John Doe", 5000.0, 30, "");
 
         // Act
         double annualSalary = employee.calculateAnnualSalary();
@@ -86,8 +86,8 @@ class EmployeeTest {
     @Test
     void equals_WithSameId_ShouldReturnTrue() {
         // Arrange
-        Employee employee1 = new Employee("1", "John Doe", 5000.0, 30, "");
-        Employee employee2 = new Employee("1", "Different Name", 6000.0, 40, "");
+        Employee employee1 = new Employee(1, "John Doe", 5000.0, 30, "");
+        Employee employee2 = new Employee(1, "Different Name", 6000.0, 40, "");
 
         // Act & Assert
         assertEquals(employee1, employee2);
@@ -97,8 +97,8 @@ class EmployeeTest {
     @Test
     void equals_WithDifferentId_ShouldReturnFalse() {
         // Arrange
-        Employee employee1 = new Employee("1", "John Doe", 5000.0, 30, "");
-        Employee employee2 = new Employee("2", "John Doe", 5000.0, 30, "");
+        Employee employee1 = new Employee(1, "John Doe", 5000.0, 30, "");
+        Employee employee2 = new Employee(2, "John Doe", 5000.0, 30, "");
 
         // Act & Assert
         assertNotEquals(employee1, employee2);
@@ -107,13 +107,13 @@ class EmployeeTest {
     @Test
     void toString_ShouldContainAllFields() {
         // Arrange
-        Employee employee = new Employee("1", "John Doe", 5000.0, 30, "profile.jpg");
+        Employee employee = new Employee(1, "John Doe", 5000.0, 30, "profile.jpg");
 
         // Act
         String result = employee.toString();
 
         // Assert
-        assertTrue(result.contains("id='1'"));
+        assertTrue(result.contains("id=1"));
         assertTrue(result.contains("name='John Doe'"));
         assertTrue(result.contains("monthlySalary=5000.0"));
         assertTrue(result.contains("age=30"));

@@ -30,8 +30,8 @@ class EmployeeServiceTest {
     void getAllEmployees_ShouldReturnListOfEmployees() {
         // Arrange
         List<Employee> expectedEmployees = Arrays.asList(
-            new Employee("1", "John Doe", 5000.0, 30, ""),
-            new Employee("2", "Jane Doe", 6000.0, 25, "")
+            new Employee(1, "John Doe", 5000.0, 30, ""),
+            new Employee(2, "Jane Doe", 6000.0, 25, "")
         );
         when(employeeRepository.getAllEmployees()).thenReturn(expectedEmployees);
 
@@ -46,13 +46,30 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void testCalculateAnnualSalary() {
+    void getEmployeeById_WithValidId_ShouldReturnEmployee() {
         // Arrange
-        Employee employee = new Employee("1", "John Doe", 5000.0, 30, "");
-        when(employeeRepository.getEmployeeById("1")).thenReturn(employee);
+        Employee expected = new Employee(1, "John Doe", 5000.0, 30, "");
+        when(employeeRepository.getEmployeeById(1)).thenReturn(expected);
 
         // Act
-        Employee result = employeeService.getEmployeeById("1");
+        Employee actual = employeeService.getEmployeeById(1);
+
+        // Assert
+        assertNotNull(actual);
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getEmployeeName(), actual.getEmployeeName());
+        assertEquals(expected.getMonthlySalary(), actual.getMonthlySalary());
+        verify(employeeRepository).getEmployeeById(1);
+    }
+
+    @Test
+    void testCalculateAnnualSalary() {
+        // Arrange
+        Employee employee = new Employee(1, "John Doe", 5000.0, 30, "");
+        when(employeeRepository.getEmployeeById(1)).thenReturn(employee);
+
+        // Act
+        Employee result = employeeService.getEmployeeById(1);
 
         // Assert
         assertNotNull(result);
@@ -61,31 +78,14 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void getEmployeeById_WithValidId_ShouldReturnEmployee() {
-        // Arrange
-        Employee expected = new Employee("1", "John Doe", 5000.0, 30, "");
-        when(employeeRepository.getEmployeeById("1")).thenReturn(expected);
-
-        // Act
-        Employee actual = employeeService.getEmployeeById("1");
-
-        // Assert
-        assertNotNull(actual);
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getEmployeeName(), actual.getEmployeeName());
-        assertEquals(expected.getMonthlySalary(), actual.getMonthlySalary());
-        verify(employeeRepository).getEmployeeById("1");
-    }
-
-    @Test
     void testGetEmployeeById_NotFound() {
         // Arrange
-        when(employeeRepository.getEmployeeById("999"))
+        when(employeeRepository.getEmployeeById(999))
             .thenThrow(new RuntimeException("Employee not found"));
 
         // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () -> {
-            employeeService.getEmployeeById("999");
+            employeeService.getEmployeeById(999);
         });
 
         assertEquals("Employee not found", exception.getMessage());
