@@ -35,8 +35,8 @@ class EmployeeControllerTest {
     void showEmployees_WithNoId_ShouldReturnAllEmployees() {
         // Arrange
         List<Employee> employees = Arrays.asList(
-            new Employee("1", "John Doe", 5000.0, 30, ""),
-            new Employee("2", "Jane Doe", 6000.0, 25, "")
+            new Employee(1, "John Doe", 5000.0, 30, ""),
+            new Employee(2, "Jane Doe", 6000.0, 25, "")
         );
         when(employeeService.getAllEmployees()).thenReturn(employees);
 
@@ -52,26 +52,26 @@ class EmployeeControllerTest {
     @Test
     void showEmployees_WithValidId_ShouldReturnSingleEmployee() {
         // Arrange
-        Employee employee = new Employee("1", "John Doe", 5000.0, 30, "");
-        when(employeeService.getEmployeeById("1")).thenReturn(employee);
+        Employee employee = new Employee(1, "John Doe", 5000.0, 30, "");
+        when(employeeService.getEmployeeById(1)).thenReturn(employee);
 
         // Act
-        String viewName = employeeController.showEmployees("1", model);
+        String viewName = employeeController.showEmployees(1, model);
 
         // Assert
         assertEquals("index", viewName);
         verify(model).addAttribute("employees", List.of(employee));
-        verify(employeeService).getEmployeeById("1");
+        verify(employeeService).getEmployeeById(1);
     }
 
     @Test
     void showEmployees_WithError_ShouldReturnErrorView() {
         // Arrange
-        when(employeeService.getEmployeeById("999"))
+        when(employeeService.getEmployeeById(999))
             .thenThrow(new RuntimeException("Employee not found"));
 
         // Act
-        String viewName = employeeController.showEmployees("999", model);
+        String viewName = employeeController.showEmployees(999, model);
 
         // Assert
         assertEquals("error", viewName);

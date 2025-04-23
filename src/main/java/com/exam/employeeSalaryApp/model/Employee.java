@@ -1,30 +1,36 @@
 package com.exam.employeeSalaryApp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 /**
  * Employee entity class that represents an employee in the system.
  * This class follows the principles of encapsulation and data validation.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Employee {
     
-    private String id;
-    private String employeeName; // Renamed for Java naming conventions
-    private double monthlySalary; // Renamed for clarity
-    private int age; // Simplified name
-    private String profileImage; // Renamed for Java naming conventions
+    @JsonProperty("id")
+    private Integer id;
+
+    @JsonProperty("employee_name")
+    private String employeeName;
+
+    @JsonProperty("employee_salary")
+    private Double monthlySalary;
+
+    @JsonProperty("employee_age")
+    private Integer age;
+
+    @JsonProperty("profile_image")
+    private String profileImage = "";
 
     /**
      * Constructs a new Employee with all required fields.
-     *
-     * @param id Employee's unique identifier
-     * @param employeeName Employee's full name
-     * @param monthlySalary Employee's monthly salary
-     * @param age Employee's age
-     * @param profileImage URL or path to employee's profile image
      */
-    public Employee(String id, String employeeName, double monthlySalary, int age, String profileImage) {
-        setId(id); // Using setters for validation
+    public Employee(Integer id, String employeeName, Double monthlySalary, Integer age, String profileImage) {
+        setId(id);
         setEmployeeName(employeeName);
         setMonthlySalary(monthlySalary);
         setAge(age);
@@ -35,26 +41,22 @@ public class Employee {
      * Default constructor required for JSON deserialization.
      */
     public Employee() {
+        // profileImage already initialized to "" by field declaration
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
-        if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID cannot be null or empty");
+    public void setId(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID cannot be null");
         }
-        this.id = id.trim();
+        this.id = id;
     }
 
     public String getEmployeeName() {
         return employeeName;
-    }
-
-    // Maintaining compatibility with API response
-    public String getEmployee_name() {
-        return getEmployeeName();
     }
 
     public void setEmployeeName(String employeeName) {
@@ -64,69 +66,34 @@ public class Employee {
         this.employeeName = employeeName.trim();
     }
 
-    // Maintaining compatibility with API response
-    public void setEmployee_name(String employee_name) {
-        setEmployeeName(employee_name);
-    }
-
-    public double getMonthlySalary() {
+    public Double getMonthlySalary() {
         return monthlySalary;
     }
 
-    // Maintaining compatibility with API response
-    public double getEmployee_salary() {
-        return getMonthlySalary();
-    }
-
-    public void setMonthlySalary(double monthlySalary) {
-        if (monthlySalary < 0) {
-            throw new IllegalArgumentException("Salary cannot be negative");
+    public void setMonthlySalary(Double monthlySalary) {
+        if (monthlySalary == null || monthlySalary < 0) {
+            throw new IllegalArgumentException("Salary cannot be null or negative");
         }
         this.monthlySalary = monthlySalary;
     }
 
-    // Maintaining compatibility with API response
-    public void setEmployee_salary(double employee_salary) {
-        setMonthlySalary(employee_salary);
-    }
-
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    // Maintaining compatibility with API response
-    public int getEmployee_age() {
-        return getAge();
-    }
-
-    public void setAge(int age) {
-        if (age <= 0) {
+    public void setAge(Integer age) {
+        if (age == null || age <= 0) {
             throw new IllegalArgumentException("Age must be a positive integer");
         }
         this.age = age;
-    }
-
-    // Maintaining compatibility with API response
-    public void setEmployee_age(int employee_age) {
-        setAge(employee_age);
     }
 
     public String getProfileImage() {
         return profileImage;
     }
 
-    // Maintaining compatibility with API response
-    public String getProfile_image() {
-        return getProfileImage();
-    }
-
     public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage != null ? profileImage.trim() : null;
-    }
-
-    // Maintaining compatibility with API response
-    public void setProfile_image(String profile_image) {
-        setProfileImage(profile_image);
+        this.profileImage = profileImage != null ? profileImage.trim() : "";
     }
 
     /**
@@ -136,6 +103,9 @@ public class Employee {
      * @return the calculated annual salary
      */
     public double calculateAnnualSalary() {
+        if (monthlySalary == null) {
+            return 0.0;
+        }
         return this.monthlySalary * 12;
     }
 
@@ -155,7 +125,7 @@ public class Employee {
     @Override
     public String toString() {
         return "Employee{" +
-            "id='" + id + '\'' +
+            "id=" + id +
             ", name='" + employeeName + '\'' +
             ", monthlySalary=" + monthlySalary +
             ", age=" + age +

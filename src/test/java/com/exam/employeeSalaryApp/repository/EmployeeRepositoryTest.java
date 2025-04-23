@@ -1,11 +1,13 @@
 package com.exam.employeeSalaryApp.repository;
 
-import com.exam.employeeSalaryApp.model.ApiResponse;
 import com.exam.employeeSalaryApp.model.Employee;
+import com.exam.employeeSalaryApp.model.EmployeeListResponse;
+import com.exam.employeeSalaryApp.model.SingleEmployeeResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,6 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class EmployeeRepositoryTest {
@@ -40,14 +43,16 @@ class EmployeeRepositoryTest {
     @Test
     void getAllEmployees_Success() {
         // Arrange
-        ApiResponse mockResponse = new ApiResponse();
+        EmployeeListResponse mockResponse = new EmployeeListResponse();
+        mockResponse.setStatus("success");
         List<Employee> expectedEmployees = Arrays.asList(
-            new Employee("1", "John", 5000.0, 30, ""),
-            new Employee("2", "Jane", 6000.0, 25, "")
+            new Employee(1, "John", 5000.0, 30, ""),
+            new Employee(2, "Jane", 6000.0, 25, "")
         );
         mockResponse.setData(expectedEmployees);
-        when(restTemplate.getForObject(anyString(), eq(ApiResponse.class)))
-            .thenReturn(mockResponse);
+        ResponseEntity<EmployeeListResponse> responseEntity = ResponseEntity.ok(mockResponse);
+        when(restTemplate.getForEntity(anyString(), eq(EmployeeListResponse.class)))
+            .thenReturn(responseEntity);
 
         // Act
         List<Employee> result = employeeRepository.getAllEmployees();
@@ -62,8 +67,11 @@ class EmployeeRepositoryTest {
     @Test
     void getAllEmployees_EmptyResponse() {
         // Arrange
-        when(restTemplate.getForObject(anyString(), eq(ApiResponse.class)))
-            .thenReturn(new ApiResponse());
+        EmployeeListResponse mockResponse = new EmployeeListResponse();
+        mockResponse.setStatus("success");
+        ResponseEntity<EmployeeListResponse> responseEntity = ResponseEntity.ok(mockResponse);
+        when(restTemplate.getForEntity(anyString(), eq(EmployeeListResponse.class)))
+            .thenReturn(responseEntity);
 
         // Act
         List<Employee> result = employeeRepository.getAllEmployees();
@@ -76,58 +84,65 @@ class EmployeeRepositoryTest {
     @Test
     void getEmployeeById_Success() {
         // Arrange
-        ApiResponse mockResponse = new ApiResponse();
-        Employee expectedEmployee = new Employee("1", "John", 5000.0, 30, "");
+        SingleEmployeeResponse mockResponse = new SingleEmployeeResponse();
+        mockResponse.setStatus("success");
+        Employee expectedEmployee = new Employee(1, "John", 5000.0, 30, "");
         mockResponse.setData(expectedEmployee);
-        when(restTemplate.getForObject(anyString(), eq(ApiResponse.class)))
-            .thenReturn(mockResponse);
+        ResponseEntity<SingleEmployeeResponse> responseEntity = ResponseEntity.ok(mockResponse);
+        when(restTemplate.getForEntity(anyString(), eq(SingleEmployeeResponse.class)))
+            .thenReturn(responseEntity);
 
         // Act
-        Employee result = employeeRepository.getEmployeeById("1");
+        Employee result = employeeRepository.getEmployeeById(1);
 
         // Assert
         assertNotNull(result);
-        assertEquals("1", result.getId());
+        assertEquals(1, result.getId());
         assertEquals("John", result.getEmployeeName());
     }
 
     @Test
     void getEmployeeById_NotFound() {
         // Arrange
-        when(restTemplate.getForObject(anyString(), eq(ApiResponse.class)))
-            .thenReturn(null);
+        SingleEmployeeResponse mockResponse = new SingleEmployeeResponse();
+        mockResponse.setStatus("error");
+        mockResponse.setMessage("Employee not found");
+        ResponseEntity<SingleEmployeeResponse> responseEntity = ResponseEntity.ok(mockResponse);
+        when(restTemplate.getForEntity(anyString(), eq(SingleEmployeeResponse.class)))
+            .thenReturn(responseEntity);
 
         // Act & Assert
-        assertThrows(RuntimeException.class, () -> 
-            employeeRepository.getEmployeeById("999")
+        Exception exception = assertThrows(RuntimeException.class, () -> 
+            employeeRepository.getEmployeeById(999)
         );
+        assertTrue(exception.getMessage().contains("Failed to fetch employee"));
     }
 
     @Test
     void getAllEmployees_WithRetry() {
         // Arrange
-        when(restTemplate.getForObject(anyString(), eq(ApiResponse.class)))
+        when(restTemplate.getForEntity(anyString(), eq(EmployeeListResponse.class)))
             .thenThrow(HttpClientErrorException.TooManyRequests.class)
             .thenThrow(HttpClientErrorException.TooManyRequests.class)
-            .thenReturn(new ApiResponse());
+            .thenReturn(ResponseEntity.ok(new EmployeeListResponse()));
 
         // Act
         List<Employee> result = employeeRepository.getAllEmployees();
 
         // Assert
         assertNotNull(result);
-        verify(restTemplate, times(3)).getForObject(anyString(), eq(ApiResponse.class));
+        verify(restTemplate, times(3)).getForEntity(anyString(), eq(EmployeeListResponse.class));
     }
 
     @Test
     void getEmployeeById_MaxRetriesExceeded() {
         // Arrange
-        when(restTemplate.getForObject(anyString(), eq(ApiResponse.class)))
+        when(restTemplate.getForEntity(anyString(), eq(SingleEmployeeResponse.class)))
             .thenThrow(HttpClientErrorException.TooManyRequests.class);
 
         // Act & Assert
         Exception exception = assertThrows(RuntimeException.class, () ->
-            employeeRepository.getEmployeeById("1")
+            employeeRepository.getEmployeeById(1)
         );
         assertTrue(exception.getMessage().contains("Too many requests"));
     }
