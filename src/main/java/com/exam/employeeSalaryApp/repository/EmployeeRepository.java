@@ -94,7 +94,7 @@ public class EmployeeRepository {
                 logger.info("Attempt {} of {}", attempt, MAX_RETRIES);
                 return task.execute();
             } catch (HttpClientErrorException.TooManyRequests e) {
-                lastException = new RuntimeException("Rate limit exceeded", e);
+                lastException = new RuntimeException("Too many requests", e);
                 if (attempt < MAX_RETRIES) {
                     long waitTime = calculateWaitTime(attempt);
                     logger.warn("Rate limit exceeded on attempt {}. Waiting {} ms before retry.", 
