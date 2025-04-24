@@ -1,6 +1,17 @@
 # Employee Salary Management Application
 
-This Spring Boot application manages employee information and calculates annual salaries by consuming a REST API.
+This Spring Boot application manages employee information and calculates annual salaries by consuming REST APIs. It features a responsive design and implements enterprise-level practices.
+
+## Technology Stack
+
+- Java 17
+- Spring Boot
+- Maven 3.6+
+- Thymeleaf
+- Bootstrap 5
+- JUnit 5
+- SLF4J for logging
+- Jackson for JSON processing
 
 ## Prerequisites
 
@@ -13,7 +24,7 @@ This Spring Boot application manages employee information and calculates annual 
 
 ### Clone the Repository
 ```bash
-git clone [https://github.com/ztevenx100/java-employee-salary-app]
+git clone https://github.com/ztevenx100/java-employee-salary-app
 cd java-employee-salary-app
 ```
 
@@ -62,6 +73,9 @@ The application will start at `http://localhost:8080`
 - Calculate annual salaries
 - Responsive Bootstrap UI
 - RESTful API consumption
+- Caching support
+- Retry mechanism for API failures
+- Error handling and validation
 
 ## Project Structure
 
@@ -83,8 +97,14 @@ src/
 
 ## API Endpoints
 
-- GET `/` - Home page
+### Application Endpoints
+- GET `/` - Home page with employee list
 - GET `/?id={employeeId}` - Search by ID
+- GET `/about` - About page
+
+### Consumed External APIs
+- GET `http://dummy.restapiexample.com/api/v1/employees` - Get all employees
+- GET `http://dummy.restapiexample.com/api/v1/employee/{id}` - Get employee by ID
 
 ## Testing
 
@@ -92,6 +112,12 @@ Run tests using:
 ```bash
 mvn test
 ```
+
+The project includes comprehensive unit tests for:
+- Controllers
+- Services
+- Repositories
+- Models
 
 ## Deployment
 
@@ -108,13 +134,17 @@ mvn clean package
 java -jar target/employeeSalaryApp-1.0-SNAPSHOT.war
 ```
 
-## Architecture
+## Technical Features
 
-This application follows:
-- MVC architecture
-- SOLID principles
+- MVC Architecture with Spring Boot
+- SOLID principles implementation
 - Object-Oriented Programming practices
 - Responsive design with Bootstrap
+- Caching with Spring Cache
+- Exponential backoff retry mechanism
+- Comprehensive logging
+- Exception handling
+- JSON data processing with Jackson
 
 ## Contributing
 
