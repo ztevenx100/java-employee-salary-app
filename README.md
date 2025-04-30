@@ -64,7 +64,7 @@ mvn spring-boot:run
 1. Find `EmployeeSalaryAppApplication.java`
 2. Right-click and select `Run As > Java Application`
 
-The application will start at `http://localhost:8080`
+The application will start at `http://localhost:8081`
 
 ## Features
 
